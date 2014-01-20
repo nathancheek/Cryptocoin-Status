@@ -3,6 +3,7 @@
 #the current BTC value on Cryptsy and the BTC/USD exchange rate on bitcoinaverage.com
 DOGEADDRESS="D000000000000000000000000000000000"
 pushoverNotificationsEnabled="false"
+#Fill these out if you are using Pushover notifications
 POTOKEN="000000000000000000000000000000"
 POUSER="000000000000000000000000000000"
 POSOUND="intermission"
@@ -29,6 +30,7 @@ usdPriceResult=$(curl -s https://api.bitcoinaverage.com/ticker/global/USD/)
 usdPrice=$(echo $usdPriceResult | grep -oP '(?<=\"last\": ).*' | sed 's/,.*//')
 usdValue=$(printf "%.2f\n" $(echo "$bitcoinValue * $usdPrice" | bc))
 echo "Value of your DOGE in USD: $usdValue"
+echo "$(date +"%Y-%m-%d %T") - DOGE balance: $dogeBalance - Latest trade in BTC: $bitcoinPrice - Value of your DOGE in BTC: $bitcoinValue - Value of your DOGE in USD: \$$usdValue" >> ~/DogecoinStatus.log
 if [ "$pushoverNotificationsEnabled" = "true" ]; then
 	echo "Sending notification to Pushover..."
 	curl -s -F "token=$POTOKEN" -F "user=$POUSER" -F "title=Current dogecoin value" -F "message=Balance: $dogeBalance DOGE - Value in BTC: $bitcoinPrice BTC - Value in USD: \$$usdValue" -F "sound=$POSOUND" https://api.pushover.net/1/messages.json > /dev/null
