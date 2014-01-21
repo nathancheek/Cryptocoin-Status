@@ -13,7 +13,7 @@ echo "DOGE balance: $dogeBalance"
 requestFail="true"
 while [ $requestFail = "true" ]; do
 	bitcoinPriceResult=$(curl -s http://pubapi.cryptsy.com/api.php?method=singlemarketdata\&marketid=132)
-	if [ -n "$(echo $bitcoinPriceResult | grep "502 Bad Gateway")" ] ; then
+	if [ -n "$(echo $bitcoinPriceResult | grep "502 Bad Gateway")" ] || [ -n "$(echo $bitcoinPriceResult | grep "\{\"success\":1,\"return\":0")" ]; then
 		echo "Failed to grab latest market values"
 		sleep 2
 		echo "Trying again..."
