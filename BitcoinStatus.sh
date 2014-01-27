@@ -10,7 +10,6 @@ POSOUND="intermission"
 btcBalance=$(curl -s https://blockchain.info/rawaddr/$BTCADDRESS | grep -oP '(?<=\"final_balance\":).*' | sed 's/,.*//')
 btcBalance=$(echo "${btcBalance:0:-8}.${btcBalance: -8}")
 echo "BTC balance: $btcBalance"
-#usdPriceResult=$(curl -s https://api.bitcoinaverage.com/ticker/global/USD/)
 usdPrice=$(curl -s https://api.bitcoinaverage.com/ticker/global/USD/ | grep -oP '(?<=\"last\": ).*' | sed 's/,.*//')
 echo "Latest trade in USD: $usdPrice"
 usdValue=$(printf "%.2f\n" $(echo "$btcBalance * $usdPrice" | bc))
