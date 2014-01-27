@@ -1,6 +1,6 @@
 #/bin/bash
 #This script gets addressbalance from the dogechain.info API and multiplies it by
-#the current BTC value on Cryptsy and the BTC/USD exchange rate on bitcoinaverage.com
+#the current BTC value on Cryptsy and the BTC/USD exchange rate on MTGOX
 DOGEADDRESS="D000000000000000000000000000000000"
 pushoverNotificationsEnabled="false"
 #Fill these out if you are using Pushover notifications
@@ -26,8 +26,7 @@ bitcoinPrice=$(echo $bitcoinPriceResult | grep -oP '(?<=\"price\":\").*' | sed '
 echo "Latest trade in BTC: $bitcoinPrice"
 bitcoinValue=$(echo "$dogeBalance * $bitcoinPrice" | bc)
 echo "Value of your DOGE in BTC: $bitcoinValue"
-usdPriceResult=$(curl -s https://api.bitcoinaverage.com/ticker/global/USD/)
-usdPrice=$(echo $usdPriceResult | grep -oP '(?<=\"last\": ).*' | sed 's/,.*//')
+usdPrice=$(curl -s https://data.mtgox.com/api/2/BTCUSD/money/ticker | grep -oP '(?<=\"last\":{\"value\":\").*' | sed 's/\",.*//')
 usdValue=$(printf "%.2f\n" $(echo "$bitcoinValue * $usdPrice" | bc))
 echo "Value of your DOGE in USD: $usdValue"
 echo "$(date +"%Y-%m-%d %T") - DOGE balance: $dogeBalance - Latest trade in BTC: $bitcoinPrice - Value of your DOGE in BTC: $bitcoinValue - Value of your DOGE in USD: \$$usdValue" >> ~/DogecoinStatus.log

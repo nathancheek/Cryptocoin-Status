@@ -1,6 +1,6 @@
 #/bin/bash
 #This script gets the address balance from the blockchain.info API and multiplies it by
-#the BTC/USD exchange rate on bitcoinaverage.com
+#the BTC/USD exchange rate from MTGOX
 BTCADDRESS="100000000000000000000000000000"
 pushoverNotificationsEnabled="false"
 #Fill these out if you are using Pushover notifications
@@ -10,8 +10,9 @@ POSOUND="intermission"
 btcBalance=$(curl -s https://blockchain.info/rawaddr/$BTCADDRESS | grep -oP '(?<=\"final_balance\":).*' | sed 's/,.*//')
 btcBalance=$(echo "${btcBalance:0:-8}.${btcBalance: -8}")
 echo "BTC balance: $btcBalance"
-usdPrice=$(curl -s https://api.bitcoinaverage.com/ticker/global/USD/ | grep -oP '(?<=\"last\": ).*' | sed 's/,.*//')
-echo "Latest trade in USD: $usdPrice"
+usdPrice=$(curl -s https://data.mtgox.com/api/2/BTCUSD/money/ticker | grep -oP '(?<=\"last\":{\"value\":\").*' | sed 's/\",.*//')
+usdPriceDec=$(printf "%.2f\n" $(echo $usdPrice))
+echo "Latest trade in USD: $usdPriceDec"
 usdValue=$(printf "%.2f\n" $(echo "$btcBalance * $usdPrice" | bc))
 echo "Value of your BTC in USD: $usdValue"
 echo "$(date +"%Y-%m-%d %T") - BTC balance: $btcBalance - Latest trade in USD: $usdPrice - Value of your BTC in USD: \$$usdValue" >> ~/BitcoinStatus.log
