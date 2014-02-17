@@ -26,8 +26,8 @@ bitcoinPrice=$(echo $bitcoinPriceResult | grep -oP '(?<=\"price\":\").*' | sed '
 echo "Latest trade in BTC: $bitcoinPrice"
 bitcoinValue=$(echo "$dogeBalance * $bitcoinPrice" | bc)
 echo "Value of your DOGE in BTC: $bitcoinValue"
-usdPrice=$(curl -s https://data.mtgox.com/api/2/BTCUSD/money/ticker | grep -oP '(?<=\"last\":{\"value\":\").*' | sed 's/\",.*//')
-usdValue=$(printf "%.2f\n" $(echo "$bitcoinValue * $usdPrice" | bc))
+usdPrice=$(curl -s https://www.bitstamp.net/api/ticker/ | grep -oP '(?<=\"last\":\ \").*' | sed 's/\",.*//')
+usdValue=$(echo "$bitcoinValue * $usdPrice" | bc)
 echo "Value of your DOGE in USD: $usdValue"
 echo "$(date +"%Y-%m-%d %T") - DOGE balance: $dogeBalance - Latest trade in BTC: $bitcoinPrice - Value of your DOGE in BTC: $bitcoinValue - Value of your DOGE in USD: \$$usdValue" >> ~/DogecoinStatus.log
 if [ "$pushoverNotificationsEnabled" = "true" ]; then
