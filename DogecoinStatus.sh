@@ -29,7 +29,7 @@ echo "Value of your DOGE in BTC: $bitcoinValue"
 usdPrice=$(curl -s https://www.bitstamp.net/api/ticker/ | grep -oP '(?<=\"last\":\ \").*' | sed 's/\",.*//')
 usdValue=$(echo "$bitcoinValue * $usdPrice" | bc)
 echo "Value of your DOGE in USD: $usdValue"
-echo "$(date +"%Y-%m-%d %T") - DOGE balance: $dogeBalance - Latest trade in BTC: $bitcoinPrice - Value of your DOGE in BTC: $bitcoinValue - Value of your DOGE in USD: \$$usdValue" >> ~/DogecoinStatus.log
+echo "$(date +"%Y-%m-%d %T") - DOGE balance: $dogeBalance - Latest trade in BTC: $bitcoinPrice - Value of your DOGE in BTC: $bitcoinValue - Value of your DOGE in USD: \$$usdValue" >> DogecoinStatus.log
 if [ "$pushoverNotificationsEnabled" = "true" ]; then
 	echo "Sending notification to Pushover..."
 	curl -s -F "token=$POTOKEN" -F "user=$POUSER" -F "title=Current dogecoin value" -F "message=Balance: $dogeBalance DOGE - Value in BTC: $bitcoinValue BTC - Value in USD: \$$usdValue" -F "sound=$POSOUND" https://api.pushover.net/1/messages.json > /dev/null
