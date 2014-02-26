@@ -13,7 +13,7 @@ echo "DOGE balance: $dogeBalance"
 requestFail="true"
 while [ $requestFail = "true" ]; do
 	bitcoinPriceResult=$(curl -s http://pubapi.cryptsy.com/api.php?method=singlemarketdata\&marketid=132)
-	if [ -n "$(echo $bitcoinPriceResult | grep "502 Bad Gateway")" ] || [ -n "$(echo $bitcoinPriceResult | grep "\{\"success\":1,\"return\":0")" ]; then
+	if [ -n "$(echo $bitcoinPriceResult | grep "502 Bad Gateway")" ] || [ -n "$(echo $bitcoinPriceResult | grep "\{\"success\":1,\"return\":0")" ] || [ -n "$(echo $bitcoinPriceResult | grep "\{\"success\":1,\"return\":false")" ]; then
 		echo "Failed to grab latest market values"
 		sleep 2
 		echo "Trying again..."
@@ -32,7 +32,7 @@ echo "Value of your DOGE in USD: $usdValue"
 echo "$(date +"%Y-%m-%d %T") - DOGE balance: $dogeBalance - Latest trade in BTC: $bitcoinPrice - Value of your DOGE in BTC: $bitcoinValue - Value of your DOGE in USD: \$$usdValue" >> DogecoinStatus.log
 if [ "$pushoverNotificationsEnabled" = "true" ]; then
 	echo "Sending notification to Pushover..."
-	curl -s -F "token=$POTOKEN" -F "user=$POUSER" -F "title=Current dogecoin value" -F "message=Balance: $dogeBalance DOGE - Value in BTC: $bitcoinValue BTC - Value in USD: \$$usdValue" -F "sound=$POSOUND" https://api.pushover.net/1/messages.json > /dev/null
+	curl -s -F "token=$POTOKEN" -F "user=$POUSER" -F "title=Dogecoin value" -F "message=Balance: $dogeBalance DOGE -- $bitcoinValue BTC -- \$$usdValue" -F "sound=$POSOUND" https://api.pushover.net/1/messages.json > /dev/null
 fi
 echo "Done"
 exit 0
